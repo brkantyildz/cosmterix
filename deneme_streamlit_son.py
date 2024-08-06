@@ -321,13 +321,7 @@ def normalize_and_calculate_scores(df):
     return df
 
 # Cilt problemi girdiğinde benzer ürünleri önerme fonksiyonu
-def get_recommendations_by_problem(problem, skincaredf, top_n=15):
-    # TF-IDF Vectorizer tanımlama
-    tfidf_vectorizer = TfidfVectorizer(stop_words='english')
-
-    # Ürünlerin cilt sorunlarına göre TF-IDF matrisini hesaplama
-    tfidf_matrix = tfidf_vectorizer.fit_transform(skincaredf['problems'])
-
+def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None, top_n=15):
     # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
     problem_tfidf = tfidf_vectorizer.transform([problem])
 
@@ -346,7 +340,7 @@ def get_recommendations_by_problem(problem, skincaredf, top_n=15):
     # Yeni skora göre sıralama yap
     recommended_products = recommended_products.sort_values(by='new_score', ascending=False)
 
-    return recommended_products[['product_name', 'price_usd', 'rating', 'reviews', 'loves_count', 'problems']]
+    return recommended_products[['product_name_x', 'price_usd', 'rating', 'reviews', 'loves_count', 'problems']]
 
 with recommender_tab2:
     st.header("Cilt Problemine Göre Ürün Öneri Sistemi")
@@ -409,8 +403,10 @@ with recommender_tab2:
 
                 return df
 
-# Cilt problemi girdiğinde benzer ürünleri önerme fonksiyonu
-            def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None, top_n=15):
+
+            # Cilt problemi girdiğinde benzer ürünleri önerme fonksiyonu
+            def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None,
+                                               top_n=15):
                 # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
                 problem_tfidf = tfidf_vectorizer.transform([problem])
 
@@ -431,7 +427,12 @@ with recommender_tab2:
 
                 return recommended_products[
                     ['product_name_x', 'price_usd', 'rating', 'reviews', 'loves_count', 'problems']]
-    
+
+
+            # Örnek olarak bir cilt problemi vererek benzer ürünleri bulma
+            problem = 'Akne'
+            recommended_products = get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf)
+
             if recommended_products is not None:
                 st.write("Önerilen Ürünler:")
                 html_code = """
