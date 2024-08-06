@@ -12,8 +12,8 @@ st.set_page_config(layout='wide', page_title='CosmetriX')
 # Veri setlerini yükle ve birleştir
 @st.cache_data
 def get_data():
-    product_info = pd.read_csv('pythonProject3/product_info.csv')
-    output_data = pd.read_excel('pythonProject3/output.xlsx')
+    product_info = pd.read_csv('/product_info.csv')
+    output_data = pd.read_excel('/output.xlsx')
     df = pd.merge(product_info, output_data, on='product_id', how='left')
     df = df.loc[:, ~df.columns.duplicated()]
     df = df.rename(columns={'product_name_x': 'product_name', 'primary_category_x': 'primary_category',
@@ -349,7 +349,7 @@ with recommender_tab2:
 
     if st.button("Cilt Problemine Göre Öneri Al"):
         if problem:
-            skincaredf = pd.read_csv('pythonProject3/skincaredf.csv')
+            skincaredf = pd.read_csv('/skincaredf.csv')
 
             # Eksik değerleri dolduralım
             skincaredf[['problem2', 'problem3']] = skincaredf[['problem2', 'problem3']].fillna('')
