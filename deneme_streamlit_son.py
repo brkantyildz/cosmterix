@@ -430,7 +430,7 @@ with recommender_tab2:
 
 
             # Örnek olarak bir cilt problemi vererek benzer ürünleri bulma
-            problem = 'Akne'
+            problem = ''
             recommended_products = get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf)
 
             if recommended_products is not None:
