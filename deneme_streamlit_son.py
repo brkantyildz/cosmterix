@@ -410,8 +410,7 @@ with recommender_tab2:
                 return df
 
 # Cilt problemi girdiğinde benzer ürünleri önerme fonksiyonu
-            def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None,
-                                               top_n=15):
+            def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None, top_n=15):
                 # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
                 problem_tfidf = tfidf_vectorizer.transform([problem])
 
