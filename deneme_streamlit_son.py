@@ -404,35 +404,33 @@ with recommender_tab2:
                 return df
 
 
-            # Cilt problemi girdiğinde benzer ürünleri önerme fonksiyonu
-            def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None,
-                                               top_n=15):
-                # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
-                problem_tfidf = tfidf_vectorizer.transform([problem])
+            def get_recommendations_by_problem(problem, skincaredf, top_n=15):
+    # TF-IDF Vectorizer tanımlama
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english')
 
-                # Problemle tüm ürünler arasındaki benzerlik puanlarını al
-                sim_scores = cosine_similarity(problem_tfidf, tfidf_matrix).flatten()
+    # Ürünlerin cilt sorunlarına göre TF-IDF matrisini hesaplama
+    tfidf_matrix = tfidf_vectorizer.fit_transform(skincaredf['problems'].fillna(''))
 
-                # Benzerlik puanlarına göre ürünleri sırala
-                sim_scores_indices = sim_scores.argsort()[::-1][:top_n]
+    # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
+    problem_tfidf = tfidf_vectorizer.transform([problem])
 
-                # En benzer ürünleri al
-                recommended_products = skincaredf.iloc[sim_scores_indices].copy()
+    # Problemle tüm ürünler arasındaki benzerlik puanlarını al
+    sim_scores = cosine_similarity(problem_tfidf, tfidf_matrix).flatten()
 
-                # Yeni skoru hesaplama ve veri setine ekleme
-                recommended_products = normalize_and_calculate_scores(recommended_products)
+    # Benzerlik puanlarına göre ürünleri sırala
+    sim_scores_indices = sim_scores.argsort()[::-1][:top_n]
 
-                # Yeni skora göre sıralama yap
-                recommended_products = recommended_products.sort_values(by='new_score', ascending=False)
+    # En benzer ürünleri al
+    recommended_products = skincaredf.iloc[sim_scores_indices].copy()
 
-                return recommended_products[
-                    ['product_name_x', 'price_usd', 'rating', 'reviews', 'loves_count', 'problems']]
+    # Yeni skoru hesaplama ve veri setine ekleme
+    recommended_products = normalize_and_calculate_scores(recommended_products)
 
+    # Yeni skora göre sıralama yap
+    recommended_products = recommended_products.sort_values(by='new_score', ascending=False)
 
-            # Örnek olarak bir cilt problemi vererek benzer ürünleri bulma
-            problem = ''
-            recommended_products = get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf)
-
+    return recommended_products[['product_name_x', 'price_usd', 'rating', 'reviews', 'loves_count', 'problems']]
+    
             if recommended_products is not None:
                 st.write("Önerilen Ürünler:")
                 html_code = """
