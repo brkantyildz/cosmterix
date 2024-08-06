@@ -321,7 +321,7 @@ def normalize_and_calculate_scores(df):
     return df
 
 # Cilt problemi girdiğinde benzer ürünleri önerme fonksiyonu
-def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None, top_n=15):
+def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None, top_n=10):
     # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
     problem_tfidf = tfidf_vectorizer.transform(skincaredf["problem"])
 
@@ -408,7 +408,7 @@ with recommender_tab2:
             def get_recommendations_by_problem(problem, tfidf_vectorizer, tfidf_matrix, skincaredf, cosine_sim=None,
                                                top_n=15):
                 # Kullanıcının girdiği cilt problemine göre TF-IDF vektörünü hesapla
-                problem_tfidf = tfidf_vectorizer.transform([problem])
+                problem_tfidf = tfidf_vectorizer.transform(skincaredf["problems"])
 
                 # Problemle tüm ürünler arasındaki benzerlik puanlarını al
                 sim_scores = cosine_similarity(problem_tfidf, tfidf_matrix).flatten()
